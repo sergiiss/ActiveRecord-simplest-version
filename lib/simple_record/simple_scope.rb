@@ -11,14 +11,7 @@ module SimpleRecord
     end
 
     def order(column_name)
-      @foo =
-        case column_name
-        when "created_at DESC"
-          "ORDER BY #{column_name}"
-        when "created_at ASC" || "created_at"
-          "ORDER BY #{column_name}"
-        end
-      self
+      @order = "ORDER BY #{column_name}"
     end
   end
 end
