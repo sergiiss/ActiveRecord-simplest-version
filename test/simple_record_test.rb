@@ -56,4 +56,20 @@ class TestSimpleRecord < Minitest::Test
 
     assert_equal "SELECT *\nFROM comments\nWHERE name = 'Mike' AND color = 'black' AND age = 17", result_sql
   end
+
+  def test_method_where_with_hash_value_array
+    post = Post.new
+
+    result_sql = post.comments.where({ name: ["Mike", "Klause"] }).to_s
+
+    assert_equal "SELECT *\nFROM comments\nWHERE name IN ('Mike', 'Klause')", result_sql
+  end
+
+  def test_method_where_with_three_arguments_hash_value_array
+    post = Post.new
+
+    result_sql = post.comments.where({ name: ["Mike", "Klause"], age: [14, 55], city: ["Minsk", "Moscow", "NY"] }).to_s
+
+    assert_equal "SELECT *\nFROM comments\nWHERE name IN ('Mike', 'Klause') AND age IN (14, 55) AND city IN ('Minsk', 'Moscow', 'NY')", result_sql
+  end
 end
