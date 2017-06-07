@@ -1,24 +1,38 @@
 module SimpleRecord
   class SimpleScope
-    attr_reader :symbol, :order_sql
+    attr_reader :symbol, :order_sql, :filter_request
 
     def initialize(symbol)
       @symbol = symbol
+      @filter_request = ""
     end
 
     def to_s
-      "SELECT * \nFROM #{symbol}#{order_sql}"
+      "SELECT *\nFROM #{symbol}#{filter_request}#{order_sql}"
     end
 
     def order(column_name)
-      column_name =~ /^.*\s(asc|ASC|desc|DESC)$/
+      @order_sql = "\nORDER BY #{column_name}"
+      @order_sql = order_sql + " ASC" if column_name.split.length == 1
 
-      @order_sql =
-        if $1
-          "\nORDER BY #{column_name}"
+      self
+    end
+
+    def where(condition)
+      @filter_request =
+        case
+        when condition.class == Hash
+          condition.each do |key, value|
+            value = "'#{value}'" if value.class == String
+
+            @filter_request << "#{key} = #{value} AND "
+          end
+
+          "\nWHERE " + filter_request[0..-6]
         else
-          "\nORDER BY #{column_name} ASC"
+          "\nWHERE #{condition}"
         end
+
       self
     end
   end
