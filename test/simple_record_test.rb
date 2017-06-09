@@ -60,4 +60,10 @@ class TestSimpleRecord < Minitest::Test
 
     assert_equal "SELECT *\nFROM comments\nWHERE name IN ('Mike', 'Klause') AND age IN (14, 55) AND city IN ('Minsk', 'Moscow', 'NY')", result_sql
   end
+
+  def test_method_where_chain_1
+    result_sql = post.comments.where.not(name: "Luise").to_s
+
+    assert_equal "SELECT *\nFROM comments\nWHERE name != 'Luise'", result_sql
+  end
 end
