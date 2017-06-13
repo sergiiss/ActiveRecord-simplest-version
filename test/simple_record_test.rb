@@ -66,4 +66,16 @@ class TestSimpleRecord < Minitest::Test
 
     assert_equal "SELECT *\nFROM comments\nWHERE name != 'Luise'", result_sql
   end
+
+  def test_method_where_chain_2
+    result_sql = post.comments.where.not(name: nil).to_s
+
+    assert_equal "SELECT *\nFROM comments\nWHERE name IS NOT NULL", result_sql
+  end
+
+  def test_method_where_chain_3
+    result_sql = post.comments.where.not(name: "Jon", role: "admin").to_s
+
+    assert_equal "SELECT *\nFROM comments\nWHERE name != 'Jon' AND role != 'admin'", result_sql
+  end
 end

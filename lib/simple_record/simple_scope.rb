@@ -1,10 +1,11 @@
 module SimpleRecord
   class SimpleScope
-    attr_reader :symbol, :order_sql, :filter_request, :exception_request
+    attr_reader :symbol, :order_sql, :filter_request, :exception_request_filter, :exception_request
 
     def initialize(symbol)
       @symbol = symbol
       @filter_request = ""
+      @exception_request_filter = ""
 
       @value_equal_to_array = false
     end
@@ -39,9 +40,14 @@ module SimpleRecord
         arguments.each do |key, value|
           if string?(value)
             value = "'#{value}'"
-            @exception_request = "\nWHERE #{key} != #{value}"
+            @exception_request = "\nWHERE "
+            @exception_request_filter << "#{key} != #{value} AND "
+          elsif value == nil
+            @exception_request = "\nWHERE #{key} IS NOT NULL"
           end
         end
+
+        @exception_request = exception_request + exception_request_filter[0..-6]
       end
 
       self
