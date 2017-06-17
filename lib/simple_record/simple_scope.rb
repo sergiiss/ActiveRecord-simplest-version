@@ -12,11 +12,11 @@ module SimpleRecord
     end
 
     def to_s
-      "SELECT #{select_arguments}\nFROM #{symbol}#{exception_request}#{filter_request}#{order_sql}"
+      "SELECT #{select_arguments} FROM #{symbol}#{exception_request}#{filter_request}#{order_sql}"
     end
 
     def order(column_name)
-      @order_sql = "\nORDER BY #{column_name}"
+      @order_sql = " ORDER BY #{column_name}"
       @order_sql = order_sql + " ASC" if column_name.split.length == 1
 
       self
@@ -36,9 +36,9 @@ module SimpleRecord
         if hash?(selection_condition)
           select_input_hash(selection_condition)
 
-          "\nWHERE " + filter_request[0..-6]
+          " WHERE " + filter_request[0..-6]
         elsif selection_condition
-          "\nWHERE #{selection_condition}"
+          " WHERE #{selection_condition}"
         end
 
       self
@@ -49,10 +49,10 @@ module SimpleRecord
         arguments.each do |key, value|
           if string?(value)
             value = "'#{value}'"
-            @exception_request = "\nWHERE "
+            @exception_request = " WHERE "
             @exception_request_filter << "#{key} != #{value} AND "
           elsif value == nil
-            @exception_request = "\nWHERE #{key} IS NOT NULL"
+            @exception_request = " WHERE #{key} IS NOT NULL"
           end
         end
 
