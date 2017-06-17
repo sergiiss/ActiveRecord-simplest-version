@@ -1,22 +1,31 @@
 module SimpleRecord
   class SimpleScope
-    attr_reader :symbol, :order_sql, :filter_request, :exception_request_filter, :exception_request
+    attr_reader :symbol, :order_sql, :filter_request, :exception_request_filter, :exception_request, :select_arguments
 
     def initialize(symbol)
       @symbol = symbol
       @filter_request = ""
       @exception_request_filter = ""
+      @select_arguments = '*'
 
       @value_equal_to_array = false
     end
 
     def to_s
-      "SELECT *\nFROM #{symbol}#{exception_request}#{filter_request}#{order_sql}"
+      "SELECT #{select_arguments}\nFROM #{symbol}#{exception_request}#{filter_request}#{order_sql}"
     end
 
     def order(column_name)
       @order_sql = "\nORDER BY #{column_name}"
       @order_sql = order_sql + " ASC" if column_name.split.length == 1
+
+      self
+    end
+
+    def select(arguments)
+      if arguments.class == Symbol
+        @select_arguments = "#{arguments.to_s}"
+      end
 
       self
     end

@@ -78,4 +78,10 @@ class TestSimpleRecord < Minitest::Test
 
     assert_equal "SELECT *\nFROM comments\nWHERE name != 'Jon' AND role != 'admin'", result_sql
   end
+
+  def test_method_select
+    result_sql = post.comments.select(:name).to_s
+
+    assert_equal "SELECT name\nFROM comments", result_sql
+  end
 end
